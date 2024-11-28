@@ -24,8 +24,9 @@ function LoginComponent(){
             console.log(response);
             res = response.status;
 
-            // storing response to local Storage as string because it was not accepting json 
+            // storing response to local Storage as string because it was not accepting json           
             window.sessionStorage.setItem('loggedInUser', JSON.stringify(response.data));
+            localStorage.setItem("token", JSON.parse( window.sessionStorage.getItem('loggedInUser')).body.jwtToken);
         })
         .catch((error) => {
             console.log(error);

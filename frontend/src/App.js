@@ -18,9 +18,7 @@ function App() {
 				loginUser!==null && 
 				<>
 					<NavbarComponent/>
-					<SalaryHistoryComponent
-					{...loginUser}
-					/>
+					<SalaryHistoryComponent/>
 				</>
 			}
 			</div>

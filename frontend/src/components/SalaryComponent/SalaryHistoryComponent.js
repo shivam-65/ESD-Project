@@ -3,16 +3,17 @@ import axios from 'axios';
 import MonthlySalaryHistoryPage from '../pageComponent/MonthlySalaryHistory';
 import swal from 'sweetalert'; 
 
-const SalaryHistoryComponent= ({email, employeeId, firstname, lastname, title}) => {
+const SalaryHistoryComponent= () => {
+
 
     let m = new Date();
-    const monthName = m.toLocaleString('default', { month: 'long' });
     let y = m.getFullYear(); 
-    m = m.getMonth()+1; 
 
     const[history, setHistory] = useState([]);
     const[month, setMonth] = useState(m);
     const[year, setYear] = useState(y);
+    const userObj = JSON.parse(window.sessionStorage.getItem("loggedInUser")).body;
+    console.log(userObj);
 
     useEffect(() => {
         salaryHistory();
@@ -20,9 +21,10 @@ const SalaryHistoryComponent= ({email, employeeId, firstname, lastname, title}) 
 
     const salaryHistory = async () => {
         try {
-          console.log("Fetching salary history for employeeId:", employeeId);
+          console.log("Fetching salary history for employeeId:", userObj.employeeId);
 
-          const response = await axios.get(`http://localhost:8080/salary/history/${employeeId}`);
+
+          const response = await axios.get(`http://localhost:8080/salary/history/${userObj.employeeId}`);
           console.log("Response data:", response.data);
       
           setHistory(response.data); // Storing the JSX elements in history variable
@@ -39,12 +41,13 @@ const SalaryHistoryComponent= ({email, employeeId, firstname, lastname, title}) 
         return date.toLocaleString([], {
             month: 'long', 
         });
-        }
+    }
     
- 
-    const uniqueMonths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    
+    const uniqueMonths = [...new Set(history.map((item) => item.payment_date.substring(5,7)))]
+    // const uniqueMonths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     const uniqueYears = [...new Set(history.map((item) => item.payment_date.substring(0,4)))]
-
+    
     const Print = () =>{     
     console.log('print');  
     let printContents = document.getElementById('toPrint').innerHTML;
@@ -64,10 +67,10 @@ const SalaryHistoryComponent= ({email, employeeId, firstname, lastname, title}) 
                             Employee Details
                         </div>
                         <div className="card-body">
-                            <p className="card-text text-start">Name: {firstname} {lastname}</p>
-                            <p className="card-text text-start">Title: {title}</p>
-                            <p className="card-text text-start">Employee ID: {employeeId}</p>
-                            <p className="card-text text-start">Email: {email}</p>
+                            <p className="card-text text-start">Name: {userObj.firstname} {userObj.lastname}</p>
+                            <p className="card-text text-start">Title: {userObj.title}</p>
+                            <p className="card-text text-start">Employee ID: {userObj.employeeId}</p>
+                            <p className="card-text text-start">Email: {userObj.email}</p>
                         </div>
                     </div>
            
@@ -116,7 +119,7 @@ const SalaryHistoryComponent= ({email, employeeId, firstname, lastname, title}) 
                         onChange={(e)=>setMonth(parseInt(e.target.value))} 
                         className="form-select" id="monthSelect"
                         >
-                            <option selected disabled value="">{monthName}</option> 
+                            <option selected disabled value="">--- Select Month ---</option> 
                             {
                                 uniqueMonths.map((mth)=>{
                                     return(
@@ -134,7 +137,7 @@ const SalaryHistoryComponent= ({email, employeeId, firstname, lastname, title}) 
                         onChange={(e)=>setYear(parseInt(e.target.value))}
                         className="form-select" id="yearSelect"
                         >
-                            <option selected disabled value="">{year}</option> 
+                            <option selected disabled value="">--- Select Year ---</option> 
                             {
                                 uniqueYears.map((year)=>{
                                     var yearVal = parseInt(year);
@@ -161,11 +164,11 @@ const SalaryHistoryComponent= ({email, employeeId, firstname, lastname, title}) 
                     <>
                             <div className="col-12 col-md-8 offset-md-2" id="toPrint"> 
                                 <MonthlySalaryHistoryPage
-                                eid={employeeId}
-                                email={email}
-                                fname={firstname}
-                                lname={lastname}
-                                title={title}
+                                eid={userObj.employeeId}
+                                email={userObj.email}
+                                fname={userObj.firstname}
+                                lname={userObj.lastname}
+                                title={userObj.title}
                                 month={month}
                                 year={year}
                                 />

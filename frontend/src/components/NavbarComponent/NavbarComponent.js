@@ -7,6 +7,7 @@ const NavbarComponent = () => {
         window.sessionStorage.clear();
         swal ("Logged Out", "Successfully logged out", "success");
         window.location.reload(true);
+        window.localStorage.removeItem("token");
     }
 
 

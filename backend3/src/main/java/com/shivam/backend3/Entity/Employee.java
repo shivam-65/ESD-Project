@@ -32,6 +32,9 @@ public class Employee {
     @Column(nullable = false)
     private String password;
 
+    @Column
+    private String jwtToken;
+
     @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Employee_Salary> employeeSalaries;
 
